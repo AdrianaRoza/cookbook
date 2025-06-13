@@ -13,13 +13,13 @@ function App() {
   return (
   <>
    <Router>
-      <div className="min-h-screen flex flex-col">
+      <div className="h-screen flex flex-col bg-orange-100 overflow-hidden">
       <nav 
-          className="bg-orange-100p-4 flex gap-4 
+          className="bg-orange-100 p-4 flex gap-4 
             text-orange-800 font-semibold shadow">
-          <Link to="/" className='hover:underline'>Home</Link>
+          <Link to="/">Home</Link>
         </nav>
-        <main className="flex-grow p-4">
+        <main className="flex-grow p-4 overflow-auto">
         <Routes>
           <Route path="/" element={ <Home/> }/>
           <Route path="lunch" element={ <Lunch/> }/>
@@ -30,9 +30,10 @@ function App() {
           <Route path="broths" element={ <Broths/> }/>
         </Routes>
       </main>
+      <Footer/>
       </div>
    </Router>
-   <Footer/>
+   
   </>
   )
 }

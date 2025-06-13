@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 const Home = () => {
   return (
     <div 
-      className='min-h-screen bg-orange-100 p-6 
+      className='bg-orange-100 p-6 
         flex flex-col items-center'>
       
       <h1 
