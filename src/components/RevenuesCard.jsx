@@ -23,25 +23,39 @@ const RevenuesCard = ({image, titulo, descricao, autor, data, tempo}) => {
 
         <div className="p-4 text-center">
           <button 
-            onClick={() => setShowDetails(!showDetails)}
+            onClick={() => setShowDetails(true)}
             className="bg-orange-500 hover:bg-orange-600 
               text-white font-semibold py-2 px-4 rounded">
-            {showDetails ? "Fechar" : "Ver Receita"}
+                Ver Receitas
           </button>
+          </div>
         </div>
 
         {showDetails && (
-          <div className="px-4 pb-4 text-gray-700">
-            <p className="mb-2">{descricao}</p>
+          <div className="fixed inset-0 z-50 bg-white overflow-auto p-6">
+            <button onClick={() => setShowDetails(false)}
+              className="absolute top-4 right-4 text-gray-600 
+              hover:text-black text-3xl font-bold">
+                 &times;
+              </button>
+
+             <div className="max-w-2xl mx-auto mt-8">
+            <img 
+              src={image}
+              alt={titulo}
+              className="w-full h-72 object-cover rounded-xl mb-6"
+            />
+            <h1 className="text-3xl font-bold text-orange-700 mb-4">{titulo}</h1>
+            <p className="text-gray-700 mb-6">{descricao}</p>
             <div className="text-sm text-gray-500 flex justify-between">
               <span>👩‍🍳 {autor}</span>
               <span>{data} • {tempo}</span>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
-  )
-}
+  );
+};
 
 export default RevenuesCard
