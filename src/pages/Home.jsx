@@ -31,13 +31,17 @@ const Home = () => {
           value={newRevenues}
           onChange={(e) => setNewRevenues(e.target.value)}
           placeholder='Digite o nome da nova receita...'
-          className="w-full p-3 border border-orange-300 rounded-lg mb-2" 
+          className="w-full p-3 border border-orange-300 rounded-lg mb-2
+            focus:outline-none focus:border-orange-500 focus-ring-2 
+            focus:ring-orange-800" 
         />
 
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className='p-2 rounded-md border-gray-300 mb-2'
+          className="p-2 text-orange-800 bg-white rounded-md 
+            border-orange-300 mb-2 focus:outline-none 
+            focus:border-orange-500 focus:ring-2 focus:ring-orange-300"
         >
 
           <option value="lanch">Almoço</option>
@@ -51,8 +55,8 @@ const Home = () => {
 
         <button
           onClick={addRecipe}
-          className='block w-full bg-orange-500 text-white font-bold py-2 
-            px-4 rounded hover:bg-orange-600'
+          className='block w-full bg-orange-300 text-white font-bold py-2 
+            px-4 rounded hover:bg-orange-200'
         >
           Adicionar Receita
         </button>
