@@ -1,16 +1,63 @@
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
+import { useState } from 'react'
 
 const Home = () => {
+  const [newRevenues, setNewRevenues] = useState("")
+  const [category, setCategory] = useState("lunch")
+  const navigate = useNavigate()
+
+  const addRecipe = () => {
+    if(!newRevenues.trim())return alert("Digite sua receita.")
+      alert(`Receita "${newRevenues}" adicionada à categoria "${category}"`)
+      setCategory("")
+      navigate(`/${category}`)
+  }
+
   return (
     <div 
-      className='bg-orange-100 p-6 
-        flex flex-col items-center'>
+      className='bg-orange-100 p-6 flex flex-col items-center'>
       
       <h1 
         className='text-3xl sm:text-4xl font-bold mb-8 
           text-center text-orange-800'>
         Minhas Receitas
       </h1>
+
+      {/* Campo de adicao de receitas */}
+      <div className="mb-6 w-full max-w-2xl text-center">
+        
+        <input 
+          type="text" 
+          value={newRevenues}
+          onChange={(e) => setNewRevenues(e.target.value)}
+          placeholder='Digite o nome da nova receita...'
+          className="w-full p-3 border border-orange-300 rounded-lg mb-2" 
+        />
+
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className='p-2 rounded-md border-gray-300 mb-2'
+        >
+
+          <option value="lanch">Almoço</option>
+          <option value="dinner">Jantar</option>
+          <option value="breakfast">Café da Manhã</option>
+          <option value="snacks">Lanches</option>
+          <option value="drinks">Bebidas</option>
+          <option value="broths">Caldos</option>
+
+        </select>
+
+        <button
+          onClick={addRecipe}
+          className='block w-full bg-orange-500 text-white font-bold py-2 
+            px-4 rounded hover:bg-orange-600'
+        >
+          Adicionar Receita
+        </button>
+
+      </div>
 
       <div 
         className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3
