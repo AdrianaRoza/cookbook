@@ -1,18 +1,6 @@
-import {Link, useNavigate} from 'react-router-dom'
-import { useState } from 'react'
+import {Link} from 'react-router-dom'
 
 const Home = () => {
-  const [newRevenues, setNewRevenues] = useState("")
-  const [category, setCategory] = useState("lunch")
-  const navigate = useNavigate()
-
-  const addRecipe = () => {
-    if(!newRevenues.trim())return alert("Digite sua receita.")
-      alert(`Receita "${newRevenues}" adicionada à categoria "${category}"`)
-      setCategory("")
-      navigate(`/${category}`)
-  }
-
   return (
     <div 
       className='bg-orange-100 p-6 flex flex-col items-center'>
@@ -22,46 +10,6 @@ const Home = () => {
           text-center text-orange-800'>
         Minhas Receitas
       </h1>
-
-      {/* Campo de adicao de receitas */}
-      <div className="mb-6 w-full max-w-2xl text-center">
-        
-        <input 
-          type="text" 
-          value={newRevenues}
-          onChange={(e) => setNewRevenues(e.target.value)}
-          placeholder='Digite o nome da nova receita...'
-          className="w-full p-3 border border-orange-300 rounded-lg mb-2
-            focus:outline-none focus:border-orange-500 focus-ring-2 
-            focus:ring-orange-800" 
-        />
-
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="p-2 text-orange-800 bg-white rounded-md 
-            border-orange-300 mb-2 focus:outline-none 
-            focus:border-orange-500 focus:ring-2 focus:ring-orange-300"
-        >
-
-          <option value="lanch">Almoço</option>
-          <option value="dinner">Jantar</option>
-          <option value="breakfast">Café da Manhã</option>
-          <option value="snacks">Lanches</option>
-          <option value="drinks">Bebidas</option>
-          <option value="broths">Caldos</option>
-
-        </select>
-
-        <button
-          onClick={addRecipe}
-          className='block w-full bg-orange-300 text-white font-bold py-2 
-            px-4 rounded hover:bg-orange-200'
-        >
-          Adicionar Receita
-        </button>
-
-      </div>
 
       <div 
         className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3

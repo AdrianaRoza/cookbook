@@ -1,6 +1,10 @@
+import Input from "../components/Input"
 import RevenuesCard from "../components/RevenuesCard"
 
-const revenuesLunch = [
+const  Lunch = () => {
+
+
+const revenuesLunch = ([
   {
     image: "/image/almoco.jpg",
     titulo: "Frango Grelhado",
@@ -56,16 +60,14 @@ const revenuesLunch = [
     data: "14 Jun 2025",
     tempo: "2 min de leitura"
   }
-]
-
-const  Lunch = () => {
+])
   return (
     <div className="p-6 bg-orange-100 min-h-screen">
       <h1 className="text-3xl font-bold text-center text-orange-800 mb-8">
         Receitas de Almoço
       </h1>
-
-
+      <Input/>
+      
       <div 
         className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3
          gap-4 w-full max-w-6xl mx-auto'>
@@ -82,6 +84,7 @@ const  Lunch = () => {
           />
         ))}
       </div>
+      
     </div>
     )
 }
