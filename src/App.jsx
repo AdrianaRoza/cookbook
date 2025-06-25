@@ -13,7 +13,7 @@ function App() {
   return (
   <>
    <Router>
-      <div className="h-screen flex flex-col bg-orange-100 overflow-hidden">
+      <div className="h-screen flex flex-col bg-orange-50 overflow-hidden">
       <nav 
           className="bg-orange-100 p-4 flex gap-4 
             text-orange-800 font-semibold shadow">
