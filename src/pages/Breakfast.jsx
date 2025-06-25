@@ -16,48 +16,50 @@ const Breakfast = () => {
   ])
 
   const handleAddRecipe = (novaReceita) => {
-    setReceitas([...receitas, novaReceita]);
+    setReceitas([...receitas, novaReceita])
   }
 
   return (
-    <div className="min-h-screen bg-orange-100 p-6">
+    <div className="min-h-screen bg-orange-50 p-6">
       {/* Cabeçalho */}
       <div className="flex justify-between items-center mb-8 max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-orange-800">Café da Manhã</h1>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-orange-500 text-white px-4 py-2 rounded 
-            hover:bg-orange-600"
+          className="bg-orange-300 text-white px-4 py-2 rounded 
+            hover:bg-orange-400"
         >
           ➕ Adicione sua Receita
         </button>
       </div>
 
-      {/* Lista de Cards com layout menor e centralizado */}
+      {/* Lista de Cards com imagem de fundo cobrindo tudo */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
         gap-4 max-w-6xl mx-auto">
         {receitas.map((receita, index) => (
           <div
             key={index}
             onClick={() => setReceitaSelecionada(receita)}
-            className="bg-orange-200 p-4 rounded shadow cursor-pointer 
-              transition-all duration-200 hover:shadow-lg h-[220px] flex 
-              flex-col items-center justify-center text-center"
+            className="relative bg-cover bg-center rounded-xl shadow 
+              cursor-pointer transition-all duration-200 hover:shadow-lg 
+              h-[260px] flex flex-col justify-end text-center overflow-hidden"
+            style={{
+              backgroundImage: "url('/image/fundo.jpg')",
+            }}
           >
-            <h2 className="text-lg font-bold text-orange-700 mb-2">
-              {receita.titulo}
-            </h2>
+            {/* Camada escura por cima da imagem */}
+            <div className="absolute inset-0  bg-opacity-40" />
 
-            <p className="text-gray-700 mb-2 text-sm overflow-hidden 
-              text-ellipsis line-clamp-3">
-              {receita.descricao}
-            </p>
-
-            <div className="text-xs text-gray-500 space-y-1">
-              <p><strong>Autor:</strong> {receita.autor}</p>
-              <p><strong>Data:</strong> {receita.data}</p>
-              <p><strong>Tempo:</strong> {receita.tempo}</p>
-            </div>
+            {/* Conteúdo do card sobre a imagem */}
+            <div className="relative z-10 text-orange-800 p-4 flex flex-col items-center justify-center text-center h-full">
+              <h2 className="text-lg font-bold mb-1">{receita.titulo}</h2>
+              <p className="text-sm mb-2 overflow-hidden text-ellipsis line-clamp-2">{receita.descricao}</p>
+              <div className="text-xs space-y-1">
+                <p><strong>Autor:</strong> {receita.autor}</p>
+                <p><strong>Data:</strong> {receita.data}</p>
+                <p><strong>Tempo:</strong> {receita.tempo}</p>
+              </div>
+              </div>
           </div>
         ))}
       </div>
@@ -69,11 +71,10 @@ const Breakfast = () => {
         onAddRecipe={handleAddRecipe}
       />
 
-      {/* Modal para visualização da receita completa */}
+      {/* Modal de visualização da receita */}
       {receitaSelecionada && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex 
           justify-center items-center z-50">
-
           <div className="bg-white p-6 rounded-lg shadow-md w-full 
             max-w-2xl max-h-[90vh] overflow-auto relative">
             <button
