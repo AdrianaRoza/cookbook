@@ -12,7 +12,7 @@ export default function Lunch() {
 
   const [receitas, setReceitas] = useState([])
   const [checklist, setChecklist] = useState({})
-  const [editingId, setEditingId] = useState(null) // ID da receita sendo editada
+  const [editingId, setEditingId] = useState(null)
 
   useEffect(() => {
     fetchReceitas()
@@ -49,24 +49,15 @@ export default function Lunch() {
 
     try {
       const response = await fetch(url, {
-        method: method,
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
       })
 
       if (!response.ok) throw new Error("Erro ao salvar receita")
 
-      const message = editingId ? "Atualizada" : "Criada"
-      alert(`Receita ${message} com sucesso!`)
-
-      setForm({
-        title: "",
-        description: "",
-        author: "",
-        date: "",
-        time: "",
-        ingredients: ""
-      })
+      alert(`Receita ${editingId ? "atualizada" : "salva"} com sucesso!`)
+      setForm({ title: "", description: "", author: "", date: "", time: "", ingredients: "" })
       setEditingId(null)
       fetchReceitas()
     } catch (err) {
@@ -80,11 +71,26 @@ export default function Lunch() {
       title: receita.title,
       description: receita.description,
       author: receita.author,
-      date: receita.date,
-      time: receita.time,
+      date: receita.date?.split("T")[0] || "",
+      time: receita.time?.slice(0, 5) || "",
       ingredients: receita.ingredients
     })
     setEditingId(receita.id)
+  }
+
+  const handleDelete = async (id) => {
+    if (!confirm("Tem certeza que deseja excluir esta receita?")) return
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/receitas/${id}`, {
+        method: "DELETE"
+      })
+      if (!response.ok) throw new Error("Erro ao excluir receita")
+      alert("Receita excluída com sucesso!")
+      fetchReceitas()
+    } catch (err) {
+      console.error(err)
+      alert("Erro ao excluir receita.")
+    }
   }
 
   const toggleCheckbox = (receitaId, index) => {
@@ -104,7 +110,7 @@ export default function Lunch() {
         <input 
           name="title" 
           value={form.title} 
-          onChange={handleChange} 
+          onChange={handleChange}
           placeholder="Título" 
           className="block p-2 w-full rounded" 
         />
@@ -143,21 +149,18 @@ export default function Lunch() {
           placeholder="Ingredientes separados por vírgula" 
           className="block p-2 w-full rounded" 
         />
-        
         <div className="flex gap-2">
-          <button 
-            type="submit" 
-            className="bg-orange-600 text-white px-4 py-2 rounded
-             hover:bg-orange-700">
-
+          <button type="submit" className="bg-orange-600 text-white px-4 
+            py-2 rounded hover:bg-orange-700">
             {editingId ? "Atualizar Receita" : "Salvar Receita"}
           </button>
           {editingId && (
-            <button type="button" onClick={() => { setForm(
-             {title:"",description:"",author:"",date:"",time:"",ingredients:""});
-              setEditingId(null); }} 
-              className="bg-gray-400 text-white px-4 py-2 rounded
-               hover:bg-gray-500">
+            <button type="button" onClick={() => {
+              setForm({ title: "", description: "", author: "", date: "", time: "", ingredients: "" })
+              setEditingId(null)
+            }} 
+              className="bg-gray-400 text-white px-4 py-2 
+                rounded hover:bg-gray-500">
               Cancelar
             </button>
           )}
@@ -172,13 +175,22 @@ export default function Lunch() {
           <li key={receita.id} className="bg-white p-4 rounded-xl shadow">
             <div className="flex justify-between items-center">
               <h3 className="font-bold text-xl">{receita.title}</h3>
-              <button
-                onClick={() => startEdit(receita)}
-                className="bg-blue-500 text-white px-3 py-1 rounded 
-                  hover:bg-blue-600"
-              >
-                Editar
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => startEdit(receita)}
+                  className="bg-orange-500 text-white px-3 py-1 rounded 
+                    hover:bg-orange-600"
+                >
+                  Editar
+                </button>
+                <button
+                  onClick={() => handleDelete(receita.id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded
+                   hover:bg-red-600"
+                >
+                  Excluir
+                </button>
+              </div>
             </div>
             <p>{receita.description}</p>
             <p className="text-sm text-gray-600">Autor: {receita.author}</p>
@@ -195,8 +207,8 @@ export default function Lunch() {
                         checked={checklist[receita.id]?.[index] || false}
                         onChange={() => toggleCheckbox(receita.id, index)}
                       />
-                      <span className={checklist[receita.id]?.[index] ? 
-                        "line-through text-gray-500" : ""}>
+                      <span className={checklist[receita.id]?.[index] ?
+                         "line-through text-gray-500" : ""}>
                         {item.trim()}
                       </span>
                     </label>
