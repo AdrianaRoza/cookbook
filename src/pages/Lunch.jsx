@@ -23,6 +23,13 @@ export default function Lunch() {
     fetchReceitas()
   }, [])
 
+  // Função para formatar data ISO (aaaa-mm-dd) em dd/mm/aaaa
+  function formatarData(dataISO) {
+    if (!dataISO) return ""
+    const [ano, mes, dia] = dataISO.split("-")
+    return `${dia}/${mes}/${ano}`
+  }
+
   const fetchReceitas = async () => {
     try {
       const response = await fetch("http://127.0.0.1:8000/receitas/")
@@ -201,21 +208,17 @@ export default function Lunch() {
 
         {modalReceita && (
           <FormModal onClose={closeModal}>
-            <h2 
-              className="text-2xl font-bold mb-2">
-                {modalReceita.title}
+            <h2 className="text-2xl font-bold mb-2">
+              {modalReceita.title}
             </h2>
-            <p 
-              className="mb-2">
-                {modalReceita.description}
+            <p className="mb-2">
+              {modalReceita.description}
             </p>
-            <p 
-              className="text-sm text-gray-600 mb-2">
-                Autor: {modalReceita.author}
+            <p className="text-sm text-gray-600 mb-2">
+              Autor: {modalReceita.author}
             </p>
-            <p 
-              className="text-sm mb-4">
-                Data: {modalReceita.date} às {modalReceita.time}
+            <p className="text-sm mb-2">
+              Data: {formatarData(modalReceita.date)} às {modalReceita.time}
             </p>
 
             <div>
@@ -230,7 +233,7 @@ export default function Lunch() {
                         <input
                           type="checkbox"
                           checked={checklist[modalReceita.id]?.[index] || false}
-                          onChange={() => toggleCheckbox(modalReceita.id,index)}
+                          onChange={() => toggleCheckbox(modalReceita.id, index)}
                         />
                         <span className={checklist[modalReceita.id]?.[index]
                           ? "line-through text-gray-500"
