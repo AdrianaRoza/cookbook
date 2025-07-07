@@ -4,9 +4,9 @@ export default function ReceitaCard({ receita, onClick, onEdit, onDelete }) {
   return (
     <li
       onClick={() => onClick(receita)}
-      className="bg-white p-6 min-h-[180px] rounded-xl shadow-md 
-      hover:shadow-lg cursor-pointer transition duration-200 flex flex-col 
-      justify-between"
+      className="bg-white p-6 min-h-[180px] rounded-2xl shadow-xl 
+        hover:shadow-2xl hover:scale-[1.02] cursor-pointer 
+        transition-all duration-200"
     >
       <div className="mb-4">
         <h3 

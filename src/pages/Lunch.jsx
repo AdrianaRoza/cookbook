@@ -125,18 +125,23 @@ export default function Lunch() {
   }
 
   return (
-    <div className="p-6 bg-orange-100 min-h-screen">
-      <div className="flex justify-end mb-6">
-        <button
-          onClick={() => {
-            setShowForm(true)
-            setEditingId(null) // se estiver criando, limpa a edição
-          }}
-          className="bg-orange-600 text-white px-4 py-2 rounded 
-            hover:bg-orange-700 mb-6"
-        >
-          {editingId ? "✏️ Editando Receita..." : "➕ Adicionar Receita"}
-        </button>
+    <div className="p-6 bg-orange-50 min-h-screen">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-orange-800 text-center">
+          Receitas de Almoço
+        </h1>
+
+        <div className="flex justify-end mb-6">
+          <button
+            onClick={() => {
+              setShowForm(true)
+              setEditingId(null)
+            }}
+            className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition"
+          >
+            {editingId ? "✏️ Editando Receita..." : "➕ Adicionar Receita"}
+          </button>
+        </div>
       </div>
       {/* Modal de formulário */}
       {showForm && (
