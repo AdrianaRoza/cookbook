@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react"
 import FormReceita from "../components/FormReceita"
+import FormModal from "../components/FormModal"
+import ReceitaCard from "../components/ReceitaCard"
 
 export default function Lunch() {
   const [form, setForm] = useState({
@@ -15,7 +17,7 @@ export default function Lunch() {
   const [checklist, setChecklist] = useState({})
   const [editingId, setEditingId] = useState(null)
   const [modalReceita, setModalReceita] = useState(null)
-  const [showForm, setShowForm] = useState(false) // agora controla o modal de formulário
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
     fetchReceitas()
@@ -124,48 +126,32 @@ export default function Lunch() {
 
   return (
     <div className="p-6 bg-orange-100 min-h-screen">
-
-      <button
-        onClick={() => {
-          setShowForm(true)
-          setEditingId(null) // se estiver criando, limpa a edição
-        }}
-        className="bg-orange-600 text-white px-4 py-2 rounded 
-          hover:bg-orange-700 mb-6"
-      >
-        {editingId ? "✏️ Editando Receita..." : "➕ Adicionar Receita"}
-      </button>
-
+      <div className="flex justify-end mb-6">
+        <button
+          onClick={() => {
+            setShowForm(true)
+            setEditingId(null) // se estiver criando, limpa a edição
+          }}
+          className="bg-orange-600 text-white px-4 py-2 rounded 
+            hover:bg-orange-700 mb-6"
+        >
+          {editingId ? "✏️ Editando Receita..." : "➕ Adicionar Receita"}
+        </button>
+      </div>
       {/* Modal de formulário */}
       {showForm && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm 
-            flex items-center justify-center z-50 transition-opacity 
-            duration-300">
-          <div 
-            className="bg-white rounded-xl p-6 w-11/12 max-w-2xl max-h-[90vh] 
-              overflow-y-auto shadow-2xl transform transition-all duration-300 
-              scale-95 opacity-0 animate-fadeIn relative">
-
-            <button
-              onClick={handleCancel}
-              className="absolute top-2 right-3 text-red-600 text-xl font-bold"
-            >
-              ✕
-            </button>
-            <h1 className="text-2xl font-bold text-orange-800 mb-4">
-              {editingId ? "Editar Receita" : "Nova Receita de Almoço"}
-            </h1>
-
-            <FormReceita
-              form={form}
-              editingId={editingId}
-              handleChange={handleChange}
-              handleSubmit={handleSubmit}
-              handleCancel={handleCancel}
-            />
-          </div>
-        </div>
+        <FormModal onClose={handleCancel}>
+          <h1 className="text-2xl font-bold text-orange-800 mb-4">
+            {editingId ? "Editar Receita" : "Nova Receita de Almoço"}
+          </h1>
+          <FormReceita
+            form={form}
+            editingId={editingId}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            handleCancel={handleCancel}
+          />
+        </FormModal>
       )}
 
       <h2 className="text-2xl font-bold text-orange-800 mb-4">
@@ -174,47 +160,15 @@ export default function Lunch() {
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {receitas.map((receita) => (
-          <li
+          <ReceitaCard
             key={receita.id}
-            onClick={() => openModal(receita)}
-            className="bg-white p-6 min-h-[180px] rounded-xl shadow-md 
-              hover:shadow-lg cursor-pointer transition duration-200 flex 
-              flex-col justify-between"
-          >
-            <div className="mb-4">
-              <h3 className="font-bold text-xl text-orange-700 mb-2">
-                {receita.title}
-              </h3>
-              <p className="text-gray-600 text-sm">{receita.description}</p>
-            </div>
-            <div className="text-sm text-gray-500 mt-auto">
-              <p><strong>Autor:</strong> {receita.author}</p>
-              <p><strong>Data:</strong> {receita.date} às {receita.time}</p>
-              <div className="mt-2 flex gap-2">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    startEdit(receita)
-                  }}
-                  className="bg-orange-500 text-white px-3 py-1 rounded 
-                    hover:bg-orange-600"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDelete(receita.id)
-                  }}
-                  className="bg-red-500 text-white px-3 py-1 rounded
-                   hover:bg-red-600"
-                >
-                  Excluir
-                </button>
-              </div>
-            </div>
-          </li>
-        ))}
+            receita={receita}
+            onClick={openModal}
+            onEdit={startEdit}
+            onDelete={handleDelete}
+          />
+      ))}
+
       </ul>
 
       {/* Modal de detalhes */}
@@ -273,3 +227,4 @@ export default function Lunch() {
     </div>
   )
 }
+
