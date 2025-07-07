@@ -10,9 +10,9 @@ export default function FormModal({ children, onClose }) {
           scale-95 opacity-0 animate-fadeIn relative">
         <button
           onClick={onClose}
-          className="absolute top-2 right-3 text-red-600 text-xl font-bold"
+          className="text-red-500 text-right w-full font-bold mb-4"
         >
-          ✕
+          ✕ Fechar
         </button>
         {children}
       </div>

@@ -48,25 +48,40 @@ export default function Lunch() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
     const url = editingId
       ? `http://127.0.0.1:8000/receitas/${editingId}`
       : "http://127.0.0.1:8000/receitas/"
     const method = editingId ? "PUT" : "POST"
 
+    const ingredientesConvertidos = form.ingredients
+      .split("\n")
+      .map(item => item.trim())
+      .filter(item => item.length > 0)
+      .join(",")
+
+    const receitaFinal = { ...form, ingredients: ingredientesConvertidos }
+
     try {
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
+        body: JSON.stringify(receitaFinal)
       })
 
       if (!response.ok) throw new Error("Erro ao salvar receita")
 
       alert(`Receita ${editingId ? "atualizada" : "salva"} com sucesso!`)
-      setForm({ title: "", description: "", author: "", date: "", time: "", 
-        ingredients: "" })
+      setForm({
+        title: "",
+        description: "",
+        author: "",
+        date: "",
+        time: "",
+        ingredients: ""
+      })
       setEditingId(null)
-      setShowForm(false) // fecha o modal
+      setShowForm(false)
       fetchReceitas()
     } catch (err) {
       console.error(err)
@@ -75,8 +90,14 @@ export default function Lunch() {
   }
 
   const handleCancel = () => {
-    setForm({ title: "", description: "", author: "", date: "", time: "", 
-      ingredients: "" })
+    setForm({
+      title: "",
+      description: "",
+      author: "",
+      date: "",
+      time: "",
+      ingredients: ""
+    })
     setEditingId(null)
     setShowForm(false)
   }
@@ -89,9 +110,13 @@ export default function Lunch() {
       date: receita.date?.split("T")[0] || "",
       time: receita.time?.slice(0, 5) || "",
       ingredients: receita.ingredients
+        .replace(/^"|"$/g, "")
+        .split(",")
+        .map(item => item.trim())
+        .join("\n")
     })
     setEditingId(receita.id)
-    setShowForm(true) // abre o modal de edição
+    setShowForm(true)
   }
 
   const handleDelete = async (id) => {
@@ -125,9 +150,12 @@ export default function Lunch() {
   }
 
   return (
-    <div className="p-6 bg-orange-50 min-h-screen">
+    <div className="bg-orange-50 p-6 min-h-screen">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-orange-800 text-center">
+
+        <h1 
+          className="text-3xl sm:text-4xl font-bold mb-6 
+            text-orange-800 text-center">
           Receitas de Almoço
         </h1>
 
@@ -137,69 +165,57 @@ export default function Lunch() {
               setShowForm(true)
               setEditingId(null)
             }}
-            className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition"
+            className="bg-orange-500 text-white px-4 py-2 rounded 
+              hover:bg-orange-600 transition"
           >
-            {editingId ? "✏️ Editando Receita..." : "➕ Adicionar Receita"}
+            {editingId ? "✏️ Editando Receita..." : "Adicionar Receita"}
           </button>
         </div>
-      </div>
-      {/* Modal de formulário */}
-      {showForm && (
-        <FormModal onClose={handleCancel}>
-          <h1 className="text-2xl font-bold text-orange-800 mb-4">
-            {editingId ? "Editar Receita" : "Nova Receita de Almoço"}
-          </h1>
-          <FormReceita
-            form={form}
-            editingId={editingId}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            handleCancel={handleCancel}
-          />
-        </FormModal>
-      )}
 
-      <h2 className="text-2xl font-bold text-orange-800 mb-4">
-        Receitas Salvas
-      </h2>
+        {showForm && (
+          <FormModal onClose={handleCancel}>
+            <h1 className="text-2xl font-bold text-orange-800 mb-4">
+              {editingId ? "Editar Receita" : "Nova Receita de Almoço"}
+            </h1>
+            <FormReceita
+              form={form}
+              editingId={editingId}
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              handleCancel={handleCancel}
+            />
+          </FormModal>
+        )}
 
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {receitas.map((receita) => (
-          <ReceitaCard
-            key={receita.id}
-            receita={receita}
-            onClick={openModal}
-            onEdit={startEdit}
-            onDelete={handleDelete}
-          />
-      ))}
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {receitas.map((receita) => (
+            <ReceitaCard
+              key={receita.id}
+              receita={receita}
+              onClick={openModal}
+              onEdit={startEdit}
+              onDelete={handleDelete}
+            />
+          ))}
+        </ul>
 
-      </ul>
-
-      {/* Modal de detalhes */}
-      {modalReceita && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-40 
-            backdrop-blur-sm flex items-center justify-center z-50 
-            transition-opacity duration-300">
-          <div 
-            className="bg-white rounded-xl p-6 w-11/12 max-w-2xl 
-              max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all 
-              duration-300 scale-95 opacity-0 animate-fadeIn relative">
-
-            <button
-              onClick={closeModal}
-              className="text-red-500 text-right w-full font-bold mb-4"
-            >
-              ✕ Fechar
-            </button>
-            <h2 className="text-2xl font-bold mb-2">{modalReceita.title}</h2>
-            <p className="mb-2">{modalReceita.description}</p>
-            <p className="text-sm text-gray-600 mb-2">
-              Autor: {modalReceita.author}
+        {modalReceita && (
+          <FormModal onClose={closeModal}>
+            <h2 
+              className="text-2xl font-bold mb-2">
+                {modalReceita.title}
+            </h2>
+            <p 
+              className="mb-2">
+                {modalReceita.description}
             </p>
-            <p className="text-sm mb-4">
-              Data: {modalReceita.date} às {modalReceita.time}
+            <p 
+              className="text-sm text-gray-600 mb-2">
+                Autor: {modalReceita.author}
+            </p>
+            <p 
+              className="text-sm mb-4">
+                Data: {modalReceita.date} às {modalReceita.time}
             </p>
 
             <div>
@@ -226,10 +242,9 @@ export default function Lunch() {
                   ))}
               </ul>
             </div>
-          </div>
-        </div>
-      )}
+          </FormModal>
+        )}
+      </div>
     </div>
   )
 }
-

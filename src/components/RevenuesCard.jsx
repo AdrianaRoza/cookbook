@@ -39,12 +39,17 @@ const RevenuesCard = ({ image, titulo, descricao, autor, data, tempo }) => {
 
       {/* MODAL DE DETALHES */}
       {showDetails && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl overflow-auto max-h-[90vh] relative p-6">
+        <div 
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex 
+            justify-center items-center p-4">
+          <div 
+            className="bg-white rounded-xl shadow-lg w-full max-w-2xl 
+              overflow-auto max-h-[90vh] relative p-6">
             {/* BOTÃO FECHAR */}
             <button
               onClick={() => setShowDetails(false)}
-              className="absolute top-4 right-4 text-gray-600 hover:text-black text-3xl font-bold"
+              className="absolute top-4 right-4 text-gray-600 
+                hover:text-black text-3xl font-bold"
             >
               &times;
             </button>
@@ -58,7 +63,10 @@ const RevenuesCard = ({ image, titulo, descricao, autor, data, tempo }) => {
             <h1 className="text-3xl font-bold text-orange-700 mb-4">
               {titulo}
             </h1>
-            <p className="text-gray-700 mb-6 whitespace-pre-line">{descricao}</p>
+            <p 
+              className="text-gray-700 mb-6 whitespace-pre-line">
+                {descricao}
+            </p>
             <div className="text-sm text-gray-500 flex justify-between">
               <span>👩‍🍳 {autor}</span>
               <span>{data} • {tempo}</span>

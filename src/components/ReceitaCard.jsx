@@ -1,4 +1,4 @@
-// src/components/ReceitaCard.jsx
+
 
 export default function ReceitaCard({ receita, onClick, onEdit, onDelete }) {
   return (

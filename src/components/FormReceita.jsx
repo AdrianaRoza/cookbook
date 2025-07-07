@@ -44,19 +44,19 @@ export default function FormReceita({
         onChange={handleChange}
         className="block p-2 w-full rounded" 
       />
-      <input 
-        name="ingredients" 
-        value={form.ingredients} 
+      <textarea
+        name="ingredients"
+        value={form.ingredients}
         onChange={handleChange}
-        placeholder="Ingredientes separados por vírgula" 
-        className="block p-2 w-full rounded" 
+        placeholder="Digite um ingrediente por linha"
+        className="block p-2 w-full rounded h-32 resize-none"
       />
 
       <div className="flex gap-2">
         <button 
           type="submit" 
-          className="bg-orange-600 text-white px-4 py-2 rounded
-           hover:bg-orange-700">
+          className="bg-orange-500 text-white px-4 py-2 rounded
+           hover:bg-orange-600">
           {editingId ? "Atualizar Receita" : "Salvar Receita"}
         </button>
         <button 

@@ -46,10 +46,19 @@ const AddRecipeModal = ({ isOpen, onClose, onAddRecipe }) => {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-xl max-h-[90vh] overflow-auto">
-        <h2 className="text-2xl font-bold mb-4 text-orange-800">Adicionar Receita</h2>
-        <form onSubmit={handleSubmit} className="space-y-3">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-40 flex 
+        justify-center items-center z-50">
+      <div 
+        className="bg-white p-6 rounded-lg shadow-md w-full max-w-xl 
+          max-h-[90vh] overflow-auto">
+        <h2 
+          className="text-2xl font-bold mb-4 text-orange-800">
+            Adicionar Receita
+        </h2>
+        <form 
+          onSubmit={handleSubmit} 
+          className="space-y-3">
           {["titulo", "descricao", "autor", "data", "tempo"].map((field) => (
             <input
               key={field}
