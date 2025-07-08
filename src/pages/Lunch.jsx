@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react"
 import FormReceita from "../components/FormReceita"
 import FormModal from "../components/FormModal"
-import ReceitaCard from "../components/ReceitaCard"
+import ReceitaList from "../components/ReceitaList"
+import ModalDetalhesReceita from "../components/ModalDetalhesReceita"
+import BotaoAdicionar from "../components/BotaoAdicionar"
+
+const initialFormState = {
+  title: "",
+  description: "",
+  author: "",
+  date: "",
+  time: "",
+  ingredients: ""
+}
 
 export default function Lunch() {
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    author: "",
-    date: "",
-    time: "",
-    ingredients: ""
-  })
-
+  const [form, setForm] = useState(initialFormState)
   const [receitas, setReceitas] = useState([])
   const [checklist, setChecklist] = useState({})
   const [editingId, setEditingId] = useState(null)
@@ -23,7 +26,6 @@ export default function Lunch() {
     fetchReceitas()
   }, [])
 
-  // Função para formatar data ISO (aaaa-mm-dd) em dd/mm/aaaa
   function formatarData(dataISO) {
     if (!dataISO) return ""
     const [ano, mes, dia] = dataISO.split("-")
@@ -55,7 +57,6 @@ export default function Lunch() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     const url = editingId
       ? `http://127.0.0.1:8000/receitas/${editingId}`
       : "http://127.0.0.1:8000/receitas/"
@@ -75,18 +76,9 @@ export default function Lunch() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(receitaFinal)
       })
-
       if (!response.ok) throw new Error("Erro ao salvar receita")
-
       alert(`Receita ${editingId ? "atualizada" : "salva"} com sucesso!`)
-      setForm({
-        title: "",
-        description: "",
-        author: "",
-        date: "",
-        time: "",
-        ingredients: ""
-      })
+      setForm(initialFormState)
       setEditingId(null)
       setShowForm(false)
       fetchReceitas()
@@ -97,14 +89,7 @@ export default function Lunch() {
   }
 
   const handleCancel = () => {
-    setForm({
-      title: "",
-      description: "",
-      author: "",
-      date: "",
-      time: "",
-      ingredients: ""
-    })
+    setForm(initialFormState)
     setEditingId(null)
     setShowForm(false)
   }
@@ -144,7 +129,7 @@ export default function Lunch() {
   const toggleCheckbox = (receitaId, index) => {
     setChecklist(prev => ({
       ...prev,
-      [receitaId]: prev[receitaId].map((val, i) => i === index ? !val : val)
+      [receitaId]: prev[receitaId].map((val, i) => (i === index ? !val : val))
     }))
   }
 
@@ -159,24 +144,18 @@ export default function Lunch() {
   return (
     <div className="bg-orange-50 p-6 min-h-screen">
       <div className="max-w-6xl mx-auto">
-
-        <h1 
-          className="text-3xl sm:text-4xl font-bold mb-6 
-            text-orange-800 text-center">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-orange-800 text-center">
           Receitas de Almoço
         </h1>
 
         <div className="flex justify-end mb-6">
-          <button
+          <BotaoAdicionar
             onClick={() => {
               setShowForm(true)
               setEditingId(null)
             }}
-            className="bg-orange-500 text-white px-4 py-2 rounded 
-              hover:bg-orange-600 transition"
-          >
-            {editingId ? "✏️ Editando Receita..." : "Adicionar Receita"}
-          </button>
+            editing={!!editingId}
+          />
         </div>
 
         {showForm && (
@@ -194,58 +173,21 @@ export default function Lunch() {
           </FormModal>
         )}
 
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {receitas.map((receita) => (
-            <ReceitaCard
-              key={receita.id}
-              receita={receita}
-              onClick={openModal}
-              onEdit={startEdit}
-              onDelete={handleDelete}
-            />
-          ))}
-        </ul>
+        <ReceitaList
+          receitas={receitas}
+          onClick={openModal}
+          onEdit={startEdit}
+          onDelete={handleDelete}
+        />
 
         {modalReceita && (
-          <FormModal onClose={closeModal}>
-            <h2 className="text-2xl font-bold mb-2">
-              {modalReceita.title}
-            </h2>
-            <p className="mb-2">
-              {modalReceita.description}
-            </p>
-            <p className="text-sm text-gray-600 mb-2">
-              Autor: {modalReceita.author}
-            </p>
-            <p className="text-sm mb-2">
-              Data: {formatarData(modalReceita.date)} às {modalReceita.time}
-            </p>
-
-            <div>
-              <h4 className="font-semibold mb-2">Ingredientes:</h4>
-              <ul className="list-none">
-                {modalReceita.ingredients
-                  .replace(/^"|"$/g, "")
-                  .split(",")
-                  .map((item, index) => (
-                    <li key={index}>
-                      <label className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={checklist[modalReceita.id]?.[index] || false}
-                          onChange={() => toggleCheckbox(modalReceita.id, index)}
-                        />
-                        <span className={checklist[modalReceita.id]?.[index]
-                          ? "line-through text-gray-500"
-                          : ""}>
-                          {item.trim()}
-                        </span>
-                      </label>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          </FormModal>
+          <ModalDetalhesReceita
+            receita={modalReceita}
+            checklist={checklist}
+            toggleCheckbox={toggleCheckbox}
+            onClose={closeModal}
+            formatarData={formatarData}
+          />
         )}
       </div>
     </div>
