@@ -1,5 +1,5 @@
 
-export default function FormModal({ children, onClose }) {
+const FormModal = ({ children, onClose }) => {
   return (
     <div 
       className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm 
@@ -19,3 +19,4 @@ export default function FormModal({ children, onClose }) {
     </div>
   )
 }
+export default FormModal

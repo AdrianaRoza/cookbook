@@ -1,4 +1,4 @@
-export default function BotaoAdicionar({ onClick, editing }) {
+const BotaoAdicionar = ({ onClick, editing }) => {
   return (
     <button
       onClick={onClick}
@@ -9,3 +9,4 @@ export default function BotaoAdicionar({ onClick, editing }) {
     </button>
   )
 }
+export default BotaoAdicionar

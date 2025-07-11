@@ -1,6 +1,6 @@
 import ReceitaCard from "./ReceitaCard"
 
-export default function ReceitaList({ receitas, onClick, onEdit, onDelete }) {
+const  ReceitaList = ({ receitas, onClick, onEdit, onDelete }) => {
   return (
     <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {receitas.map((receita) => (
@@ -15,3 +15,4 @@ export default function ReceitaList({ receitas, onClick, onEdit, onDelete }) {
     </ul>
   )
 }
+export default  ReceitaList

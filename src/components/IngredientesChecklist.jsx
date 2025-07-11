@@ -1,5 +1,5 @@
-export default function IngredientesChecklist({ receitaId, ingredientes, 
-  checklist, toggleCheckbox }) {
+ const IngredientesChecklist = ({ receitaId, ingredientes, 
+  checklist, toggleCheckbox }) => {
   const listaIngredientes = ingredientes.replace(/^"|"$/g, "").split(",")
 
   return (
@@ -22,3 +22,4 @@ export default function IngredientesChecklist({ receitaId, ingredientes,
     </ul>
   )
 }
+export default IngredientesChecklist

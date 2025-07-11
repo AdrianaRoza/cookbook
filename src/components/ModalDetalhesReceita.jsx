@@ -1,8 +1,8 @@
 import FormModal from "./FormModal"
 import IngredientesChecklist from "./IngredientesChecklist"
 
-export default function ModalDetalhesReceita({ receita, checklist, 
-  toggleCheckbox, onClose, formatarData }) {
+ const ModalDetalhesReceita = ({ receita, checklist, 
+  toggleCheckbox, onClose, formatarData }) => {
   return (
     <FormModal onClose={onClose}>
       <h2 className="text-2xl font-bold mb-2">{receita.title}</h2>
@@ -23,3 +23,4 @@ export default function ModalDetalhesReceita({ receita, checklist,
     </FormModal>
   )
 }
+export default ModalDetalhesReceita
