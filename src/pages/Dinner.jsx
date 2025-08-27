@@ -10,12 +10,14 @@ const initialFormState = {
   date: "",
   time: "",
   ingredients: "",
-  category: "Dinner" // categoria Dinner (Jantar)
+  category: "Dinner",
+  preparation: ""
 }
 
 const Dinner = () => {
   const [receitas, setReceitas] = useState([])
   const [checklist, setChecklist] = useState({})
+  const [checklistPreparation,setChecklistPreparation] = useState({})
   const [modalReceita, setModalReceita] = useState(null)
 
   const [form, setForm] = useState(initialFormState)
@@ -38,12 +40,24 @@ const Dinner = () => {
       // Inicializa checklist (se quiser usar)
       const initialChecklist = {}
       dinnerReceitas.forEach(r => {
-        initialChecklist[r.id] = r.ingredients
+        initialChecklist[r.id] = (r.ingredients || "")
           .replace(/^"|"$/g, "")
           .split(",")
           .map(() => false)
       })
       setChecklist(initialChecklist)
+
+
+      // ✅ Inicializa checklist de preparo
+      const initialChecklistPreparation = {}
+      dinnerReceitas.forEach(r => {
+        initialChecklistPreparation[r.id] = (r.preparation || "")
+          .split("\n")
+          .map(() => false)
+      })
+      setChecklistPreparation(initialChecklistPreparation)
+
+
     } catch (error) {
       console.error("Erro ao buscar receitas:", error)
     }
@@ -56,12 +70,18 @@ const Dinner = () => {
       author: receita.author,
       date: receita.date?.split("T")[0] || "",
       time: receita.time?.slice(0, 5) || "",
-      ingredients: receita.ingredients
+      ingredients: (receita.ingredients || "")
         .replace(/^"|"$/g, "")
         .split(",")
         .map(item => item.trim())
         .join("\n"),
-      category: receita.category || "Dinner"
+      category: receita.category || "Dinner",
+
+      preparation: (receita.preparation || "")
+        .replace(/^"|"$/g, "")
+        .split(",")
+        .map(item => item.trim())
+        .join("\n")
     })
     setEditingId(receita.id)
     setShowForm(true)
@@ -89,9 +109,17 @@ const Dinner = () => {
       .filter(item => item.length > 0)
       .join(",")
 
+
+    const preparoConvertido = form.preparation
+      .split("\n")
+      .map(item => item.trim())
+      .filter(item => item.length > 0)
+      .join("\n")
+
     const receitaFinal = {
       ...form,
       ingredients: ingredientesConvertidos,
+      preparation: preparoConvertido
     }
 
     const url = editingId
@@ -142,6 +170,13 @@ const Dinner = () => {
     }))
   }
 
+  const toggleCheckboxPreparation = (receitaId, index) => {
+    setChecklistPreparation(prev => ({
+      ...prev,
+      [receitaId]: prev[receitaId].map((val, i) => i === index ? !val : val)
+    }))
+  }
+
   const openModal = (receita) => {
     setModalReceita(receita)
   }
@@ -170,7 +205,9 @@ const Dinner = () => {
           <ModalDetalhesReceita
             receita={modalReceita}
             checklist={checklist}
+            checklistPreparation={checklistPreparation}
             toggleCheckbox={toggleCheckbox}
+            toggleCheckboxPreparation={toggleCheckboxPreparation}
             onClose={closeModal}
             formatarData={(dataISO) => {
               if (!dataISO) return ""
