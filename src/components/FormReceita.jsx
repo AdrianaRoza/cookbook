@@ -55,6 +55,14 @@ const FormReceita = ({
         className="block p-2 w-full rounded h-32 resize-none"
       />
 
+      <textarea
+        name="preparation"
+        value={form.preparation}
+        onChange={handleChange}
+        placeholder="Digite o modo de preparo, cada passo em uma linha"
+        className="block p-2 w-full rounded h-32 resize-none"
+      />
+
       
       <select
         name="category"
