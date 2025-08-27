@@ -10,11 +10,14 @@ const initialFormState = {
   date: "",
   time: "",
   ingredients: "",
-  category: "Lunch"
+  category: "Lunch",
+  preparation: ""
 }
+
 const Lunch = () => {
   const [receitas, setReceitas] = useState([])
   const [checklist, setChecklist] = useState({})
+  const [checklistPreparation, setChecklistPreparation] = useState({}) // ✅ Novo estado para preparo
   const [modalReceita, setModalReceita] = useState(null)
 
   const [form, setForm] = useState(initialFormState)
@@ -30,19 +33,28 @@ const Lunch = () => {
       const response = await fetch("http://127.0.0.1:8000/receitas/")
       const data = await response.json()
 
-
       const lunchReceitas = data.filter(r => r.category === "Lunch")
       setReceitas(lunchReceitas)
 
-    
+      // ✅ Inicializa checklist de ingredientes
       const initialChecklist = {}
       lunchReceitas.forEach(r => {
-        initialChecklist[r.id] = r.ingredients
+        initialChecklist[r.id] = (r.ingredients || "")
           .replace(/^"|"$/g, "")
           .split(",")
           .map(() => false)
       })
       setChecklist(initialChecklist)
+
+      // ✅ Inicializa checklist de preparo
+      const initialChecklistPreparation = {}
+      lunchReceitas.forEach(r => {
+        initialChecklistPreparation[r.id] = (r.preparation || "")
+          .split("\n")
+          .map(() => false)
+      })
+      setChecklistPreparation(initialChecklistPreparation)
+
     } catch (error) {
       console.error("Erro ao buscar receitas:", error)
     }
@@ -55,12 +67,18 @@ const Lunch = () => {
       author: receita.author,
       date: receita.date?.split("T")[0] || "",
       time: receita.time?.slice(0, 5) || "",
-      ingredients: receita.ingredients
+      ingredients: (receita.ingredients || "")
         .replace(/^"|"$/g, "")
         .split(",")
         .map(item => item.trim())
         .join("\n"),
-      category: receita.category || "Lunch"
+      category: receita.category || "Lunch",
+
+      preparation: (receita.preparation || "")
+        .replace(/^"|"$/g, "")
+        .split(",")
+        .map(item => item.trim())
+        .join("\n")
     })
     setEditingId(receita.id)
     setShowForm(true)
@@ -88,9 +106,16 @@ const Lunch = () => {
       .filter(item => item.length > 0)
       .join(",")
 
+    const preparoConvertido = form.preparation
+      .split("\n")
+      .map(item => item.trim())
+      .filter(item => item.length > 0)
+      .join("\n")
+
     const receitaFinal = {
       ...form,
       ingredients: ingredientesConvertidos,
+      preparation: preparoConvertido
     }
 
     const url = editingId
@@ -141,6 +166,14 @@ const Lunch = () => {
     }))
   }
 
+  // ✅ Função para checkbox do modo de preparo
+  const toggleCheckboxPreparation = (receitaId, index) => {
+    setChecklistPreparation(prev => ({
+      ...prev,
+      [receitaId]: prev[receitaId].map((val, i) => i === index ? !val : val)
+    }))
+  }
+
   const openModal = (receita) => {
     setModalReceita(receita)
   }
@@ -168,7 +201,9 @@ const Lunch = () => {
           <ModalDetalhesReceita
             receita={modalReceita}
             checklist={checklist}
+            checklistPreparation={checklistPreparation} // ✅ Passa o checklist de preparo
             toggleCheckbox={toggleCheckbox}
+            toggleCheckboxPreparation={toggleCheckboxPreparation} // ✅ Passa a função
             onClose={closeModal}
             formatarData={(dataISO) => {
               if (!dataISO) return ""
@@ -202,4 +237,5 @@ const Lunch = () => {
     </div>
   )
 }
+
 export default Lunch
